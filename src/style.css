@@ -1,0 +1,510 @@
+@font-face {
+  font-family: 'Roboto-Regular';
+  src: url('./assets/fonts/roboto-regular-webfont.woff2') format('woff2'),
+       url('./assets/fonts/roboto-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  --red: #dc4c3f;
+  --white: #fff;
+  --black: #000;
+  --black-opacity-50: rgba(0, 0, 0, 0.5);
+  --very-light-grey: #fafafa;
+  --light-grey: #eee;
+  --grey: #e6e6e6;
+  --dark-grey: #787878;
+  --very-dark-grey: #444;
+  --tooltip-color: black;
+  --high-priority: #e31c3d;
+  --medium-priority: orange;
+  --low-priority: #2e8540;
+  --arrow-size: 5px;
+  --form-message: #e31c3d;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  box-sizing: border-box;
+  font-family: 'Roboto-Regular', sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+body {
+  display: grid;
+  grid-template-rows: 60px 1fr;
+  grid-template-columns: 350px 1fr;
+  grid-template-areas: 
+    "header header"
+    "sidebar content";
+  min-height: 100vh;
+}
+
+.header {
+  grid-area: header;
+  background-color: var(--red);
+  color: var(--white);
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: grid;
+  align-items: center;
+  padding-left: 2rem;
+}
+
+.logo {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo img {
+  height: auto;
+  width: 2rem;
+}
+
+.sidebar {
+  grid-area: sidebar;
+  background-color: var(--very-light-grey);
+  border: 1px solid var(--grey);
+  padding: 30px;
+}
+
+.home, .today, .this-week, .project {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  padding: 12px;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.selected {
+  background-color: var(--light-grey);
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.projects-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 20px 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.projects-title img {
+  height: 1.1rem;
+  width: auto;
+  cursor: pointer;
+}
+
+.projects-title img:hover {
+  transform: scale(1.1);
+}
+
+.projects-title img:active {
+  transform: scale(1.0);
+}
+
+.project-title {
+  position: relative;
+  top: -1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: capitalize;
+}
+
+.project-options {
+  margin-left: auto;
+}
+
+.project-options img {
+  cursor: pointer;
+  display: none;
+}
+
+.project-options img:hover {
+  background-color: var(--white);
+}
+
+.project-options img:active {
+  transform: scale(0.9);
+}
+
+.selected.project:hover img {
+  display: block;
+  border-radius: 3px;
+}
+
+.home:hover,
+.today:hover,
+.this-week:hover, 
+.project:hover {
+  background-color: var(--light-grey);
+  border-radius: 5px;
+}
+
+.content {
+  grid-area: content;
+  display: grid;
+  justify-items: center;
+  padding: 50px 0;
+}
+
+.tasks-container {
+  width: 70%;
+}
+
+.tasks-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-transform: capitalize;
+}
+
+.tasks .tasks-title {
+  font-size: 1.1rem;
+  padding-top: 10px;
+  margin-bottom: 5px;
+}
+
+.tasks {
+  padding-left: 10px;
+}
+
+.task {
+  border-bottom: 1px solid var(--grey);
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+  display: grid;
+  grid-template-columns: auto 1fr 15px max-content auto;
+  align-items: center;
+}
+
+.task * {
+  cursor: pointer;
+}
+
+.task input {
+  accent-color: var(--red);
+}
+
+.task input.checked + label {
+  font-style: italic;
+  text-decoration: line-through;
+  color: var(--dark-grey);
+}
+
+.task label {
+  margin: 0 30px 0 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Custom tooltip - start */
+.tooltip {
+  position: relative;
+}
+
+.tooltip::before,
+.tooltip::after {
+  --scale: 0;
+  position: absolute;
+  top: -0.25rem;
+  left: 50%;
+  transition: 300ms transform;
+  transform: translateX(-50%) translateY(var(--translate-y, 0)) scale(var(--scale));
+  transform-origin: bottom center;
+}
+
+.tooltip::before {
+  --translate-y: calc(-100% - var(--arrow-size));
+  content: attr(data-tooltip);
+  padding: 0.5rem;
+  width: max-content;
+  font-size: 90%;
+  color: var(--white);
+  background-color: var(--tooltip-color);
+  border-radius: 0.3rem;
+}
+
+.tooltip:hover::before,
+.tooltip:hover::after {
+  --scale: 1;
+}
+
+.tooltip::after {
+  --translate-y: calc(-1 * var(--arrow-size));
+  content: '';
+  border: var(--arrow-size) solid transparent;
+  border-top-color: var(--tooltip-color);
+  transform-origin: top center;
+}
+/* Custom tooltip - end */
+
+.task > .tooltip {
+  text-align: center;
+  cursor: pointer;
+}
+
+.high-priority {
+  color: var(--high-priority);
+  font-weight: bold;
+}
+
+.medium-priority {
+  color: var(--medium-priority);
+  font-weight: bold;
+}
+
+.low-priority {
+  color: var(--low-priority);
+  font-weight: bold;
+}
+
+.due-date {
+  margin-left: 30px;
+  color: var(--dark-grey);
+  cursor: auto;
+}
+
+.add-task {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 10px;
+  margin-top: -5px;
+  border-radius: 5px;
+}
+
+.add-task:hover {
+  background-color: var(--light-grey);
+}
+
+.add-task:active {
+  transform: scale(0.99);
+}
+
+.add-task img { 
+  height: 0.9rem;
+  width: auto;
+}
+
+.options {
+  display: flex;
+  gap: 10px;
+  margin-left: 30px;
+}
+
+.options img {
+  height: 1.5rem;
+  width: auto;
+  cursor: pointer;
+}
+
+.options img:active {
+  transform: scale(0.9);
+}
+
+.add-task-form {
+  display: grid;
+  gap: 20px;
+}
+
+.add-task-title, 
+.add-task-description, 
+.add-task-date, 
+.add-task-priority {
+  display: grid;
+  gap: 5px;
+}
+
+input, textarea {
+  border: 1px solid var(--dark-grey);
+  border-radius: 5px;
+  font-family: inherit;
+  font-size: 100%;
+  padding: 5px 10px;
+  margin: 0;
+  color: var(--very-dark-grey);
+}
+
+textarea {
+  padding: 10px;
+  resize: none;
+  overflow-y: auto;
+}
+
+.priority-options {
+  display: flex;
+  gap: 30px;
+  accent-color: var(--red);
+}
+
+.priority-options input,
+.priority-options label {
+  cursor: pointer;
+}
+
+form button {
+  font-family: inherit;
+  font-size: 100%;
+  margin: 0;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--red);
+  color: var(--white);
+}
+
+.add-task-form button {
+  justify-self: end;
+}
+
+/* Modals */
+.preload * {
+  /* This is to prevent animation on page load */
+  transition: none !important;
+}
+
+.modal {
+  position: fixed;
+  place-self: center;
+  transform: scale(0);
+  transition: 300ms ease-in-out;
+  border: 1px solid var(--black);
+  border-radius: 5px;
+  z-index: 10;
+  background-color: var(--white);
+  width: 600px;
+  max-width: 80%;
+}
+
+.modal.active {
+  transform: scale(1);
+}
+
+.modal-header {
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--dark-grey);
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.close-modal {
+  border: none;
+  outline: none;
+  background: none;
+  font-size: 1.75rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close-modal:hover {
+  transform: scale(1.1);
+}
+
+.close-modal:active {
+  transform: scale(1.0);
+}
+
+.modal-body {
+  padding: 20px 30px;
+}
+
+.modal-body button {
+  cursor: pointer;
+}
+
+.modal-body button:hover {
+  filter: brightness(0.9);
+}
+
+.modal-body button:active {
+  transform: scale(0.95);
+}
+
+#overlay {
+  position: fixed;
+  opacity: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--black-opacity-50);
+  pointer-events: none;
+  transition: 300ms ease-in-out;
+}
+
+#overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.task-details-modal {
+  width: 500px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.task-details-modal .modal-body {
+  display: grid;
+  gap: 30px;
+}
+
+.task-details-modal .task-title,
+.task-details-modal .task-description {
+  display: grid;
+  gap: 10px;
+}
+
+.task-details-modal .title {
+  font-weight: bold;
+}
+
+.task-title-content,
+.task-description-content {
+  color: var(--very-dark-grey);
+  text-align: justify;
+}
+
+.add-project-modal {
+  width: 400px;
+}
+
+.add-project-form {
+  display: grid;
+  gap: 30px;
+}
+
+.add-project-name {
+  display: grid;
+  gap: 10px;
+}
+
+.add-project-form button {
+  justify-self: end;
+}
+
+.form-message {
+  color: var(--form-message);
+}
