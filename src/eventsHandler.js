@@ -10,11 +10,11 @@ function subscribeToEvents() {
   pubsub.subscribe('addTask', addTask);
 
   // Viewing details of a task
-  pubsub.subscribe('getTask', editTaskForm.prefillForm);
-  pubsub.subscribe('openTaskDetailsModal', getTask);
-
-  // Editing a task
   pubsub.subscribe('getTask', taskUI.fillViewMoreModal);
+  pubsub.subscribe('openTaskDetailsModal', getTask);
+  
+  // Editing a task
+  pubsub.subscribe('getTask', editTaskForm.prefillForm);
   pubsub.subscribe('openEditTaskModal', getTask);
   pubsub.subscribe('updateTask', updateTask);
 
