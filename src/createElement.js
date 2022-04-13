@@ -7,6 +7,4 @@ function createElement(elementType, classes, otherAttributes) {
   return element;
 }
 
-export {
-  createElement
-};
+export { createElement };

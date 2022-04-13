@@ -1,26 +1,24 @@
 const pubsub = {
   events: {},
 
-  subscribe: function(eventName, fn) {
+  subscribe: function (eventName, fn) {
     this.events[eventName] = this.events[eventName] || [];
     this.events[eventName].push(fn);
   },
 
-  unsubscribe: function(eventName, fn) {
+  unsubscribe: function (eventName, fn) {
     if (this.events[eventName]) {
-      this.events[eventName] = this.events[eventName].filter(f => f !== fn);
+      this.events[eventName] = this.events[eventName].filter((f) => f !== fn);
     }
   },
 
-  publish: function(eventName, data) {
+  publish: function (eventName, data) {
     if (this.events[eventName]) {
-      this.events[eventName].forEach(fn => {
+      this.events[eventName].forEach((fn) => {
         fn(data);
       });
     }
-  }
+  },
 };
 
-export {
-  pubsub
-};
+export { pubsub };

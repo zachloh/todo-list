@@ -7,7 +7,4 @@ function retrieveFromStorage() {
   return projects;
 }
 
-export {
-  addToStorage,
-  retrieveFromStorage
-}
+export { addToStorage, retrieveFromStorage };

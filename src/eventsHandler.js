@@ -1,7 +1,34 @@
 import { pubsub } from './pubsub';
-import { loadTasks, addTask, getTask, updateTask, updateIsChecked, updateTaskPriority, deleteTask, setTasksArray, getDueTasks, getDueTaskDetails, setTodayIsChecked, setTodayTaskPriority, editTodayTask, deleteTodayDueTask, getTasksForStorage } from './task';
+import {
+  loadTasks,
+  addTask,
+  getTask,
+  updateTask,
+  updateIsChecked,
+  updateTaskPriority,
+  deleteTask,
+  setTasksArray,
+  getDueTasks,
+  getDueTaskDetails,
+  setTodayIsChecked,
+  setTodayTaskPriority,
+  editTodayTask,
+  deleteTodayDueTask,
+  getTasksForStorage,
+} from './task';
 import { editTaskForm, taskUI } from './taskDisplayController';
-import { pageLoad, loadProjects, addProject, selectProject, updateProject, deleteProject, loopEachProject, getTaskFromProject, updateTodayProject, retrieveTasks } from './projects';
+import {
+  pageLoad,
+  loadProjects,
+  addProject,
+  selectProject,
+  updateProject,
+  deleteProject,
+  loopEachProject,
+  getTaskFromProject,
+  updateTodayProject,
+  retrieveTasks,
+} from './projects';
 import { todayUI } from './projectDisplayController';
 import { addToStorage } from './storage';
 
@@ -12,7 +39,7 @@ function subscribeToEvents() {
   // Viewing details of a task
   pubsub.subscribe('getTask', taskUI.fillViewMoreModal);
   pubsub.subscribe('openTaskDetailsModal', getTask);
-  
+
   // Editing a task
   pubsub.subscribe('getTask', editTaskForm.prefillForm);
   pubsub.subscribe('openEditTaskModal', getTask);
@@ -78,6 +105,4 @@ function subscribeToEvents() {
   pubsub.subscribe('loadProjects', loadProjects);
 }
 
-export {
-  subscribeToEvents
-};
+export { subscribeToEvents };

@@ -17,7 +17,7 @@ function addModalEvents() {
     openModal(modal);
   });
 
-  closeModalBtns.forEach(btn => {
+  closeModalBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       const modal = btn.closest('.modal');
       closeModal(modal);
@@ -26,9 +26,9 @@ function addModalEvents() {
 
   overlay.addEventListener('click', () => {
     const modals = document.querySelectorAll('.modal.active');
-    modals.forEach(modal => {
+    modals.forEach((modal) => {
       closeModal(modal);
-    })
+    });
   });
 }
 
@@ -52,23 +52,27 @@ function addTaskFormSubmitEvents() {
 }
 
 // 'Add Task' form module
-const addTaskForm = (function() {
+const addTaskForm = (function () {
   const form = document.querySelector('.add-task-modal form');
   const taskTitle = document.querySelector('.add-task-modal input[type=text]');
   const taskDescription = document.querySelector('.add-task-modal textarea');
-  const taskDueDate = document.querySelector('.add-task-modal input[type=date]');
-  const taskPriority = document.querySelectorAll('.add-task-modal input[name="priority"]');
+  const taskDueDate = document.querySelector(
+    '.add-task-modal input[type=date]'
+  );
+  const taskPriority = document.querySelectorAll(
+    '.add-task-modal input[name="priority"]'
+  );
 
   function formSubmitEvent() {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const priority = [...taskPriority].find(input => input.checked).value;
+      const priority = [...taskPriority].find((input) => input.checked).value;
       const task = {
         title: taskTitle.value,
         description: taskDescription.value,
         dueDate: taskDueDate.value,
-        priority: priority
+        priority: priority,
       };
       const modal = document.querySelector('.add-task-modal');
 
@@ -85,7 +89,9 @@ const addTaskForm = (function() {
 
   function isValid(name) {
     const currentTaskNames = document.querySelectorAll('.tasks label');
-    return !([...currentTaskNames].some(taskName => taskName.textContent === name));
+    return ![...currentTaskNames].some(
+      (taskName) => taskName.textContent === name
+    );
   }
 
   function resetForm() {
@@ -96,34 +102,38 @@ const addTaskForm = (function() {
   }
 
   return {
-    formSubmitEvent
+    formSubmitEvent,
   };
 })();
 
 // 'Edit Task' form module
-const editTaskForm = (function() {
+const editTaskForm = (function () {
   const form = document.querySelector('.edit-task-modal form');
   const title = document.querySelector('.edit-task-modal input[type=text]');
   const description = document.querySelector('.edit-task-modal textarea');
   const dueDate = document.querySelector('.edit-task-modal input[type=date]');
-  const priority = document.querySelectorAll('.edit-task-modal input[name="priority"]');
+  const priority = document.querySelectorAll(
+    '.edit-task-modal input[name="priority"]'
+  );
 
   function formSubmitEvent() {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const priorityValue = [...priority].find(input => input.checked).value;
+      const priorityValue = [...priority].find((input) => input.checked).value;
       const task = {
         title: title.value,
         description: description.value,
         dueDate: dueDate.value,
-        priority: priorityValue
+        priority: priorityValue,
       };
       const modal = document.querySelector('.edit-task-modal');
 
       // Get a list of all the existing task names, but filter out the name of the current edited task name
       const allTasks = document.querySelectorAll('.task');
-      const filteredTasks = [...allTasks].filter(task => task.dataset.index !== taskUI.getIndex());
+      const filteredTasks = [...allTasks].filter(
+        (task) => task.dataset.index !== taskUI.getIndex()
+      );
 
       if (isValid(task.title, filteredTasks)) {
         closeModal(modal);
@@ -135,14 +145,14 @@ const editTaskForm = (function() {
   }
 
   function isValid(name, tasks) {
-    const taskNames = tasks.map(task => {
+    const taskNames = tasks.map((task) => {
       const taskName = task.querySelector('label').textContent;
       return taskName;
-    })
-    return !(taskNames.some(taskName => taskName === name));
+    });
+    return !taskNames.some((taskName) => taskName === name);
   }
 
-  function prefillForm(task) { 
+  function prefillForm(task) {
     title.value = task.title;
     description.value = task.description;
     dueDate.value = task.dueDate;
@@ -157,16 +167,16 @@ const editTaskForm = (function() {
 
   return {
     formSubmitEvent,
-    prefillForm
+    prefillForm,
   };
 })();
 
 // Task UI module
-const taskUI = (function() {
+const taskUI = (function () {
   let index;
 
   function render(tasksToRender) {
-    tasksToRender.forEach(task => {
+    tasksToRender.forEach((task) => {
       addTask(task);
     });
   }
@@ -174,16 +184,23 @@ const taskUI = (function() {
   function addTask(task) {
     let taskCounter = tasks.childElementCount;
 
-    const taskContainer = createElement('div', ['task'], {'data-index': taskCounter});
+    const taskContainer = createElement('div', ['task'], {
+      'data-index': taskCounter,
+    });
     tasks.appendChild(taskContainer);
 
-    const checkbox = createElement('input', [], {type: 'checkbox', id: `task-${taskCounter}`});
+    const checkbox = createElement('input', [], {
+      type: 'checkbox',
+      id: `task-${taskCounter}`,
+    });
     taskContainer.appendChild(checkbox);
 
-    const label = createElement('label', [], {for: `task-${taskCounter}`});
+    const label = createElement('label', [], { for: `task-${taskCounter}` });
     taskContainer.appendChild(label);
 
-    const priority = createElement('div', ['tooltip'], {'data-tooltip': 'Toggle Priority'});
+    const priority = createElement('div', ['tooltip'], {
+      'data-tooltip': 'Toggle Priority',
+    });
     taskContainer.appendChild(priority);
 
     const dueDate = createElement('div', ['due-date'], {});
@@ -192,7 +209,9 @@ const taskUI = (function() {
     const options = createElement('div', ['options'], {});
     taskContainer.appendChild(options);
 
-    const viewMoreIconContainer = createElement('div', ['tooltip'], {'data-tooltip': 'View Details'});
+    const viewMoreIconContainer = createElement('div', ['tooltip'], {
+      'data-tooltip': 'View Details',
+    });
     options.appendChild(viewMoreIconContainer);
 
     const viewMoreIcon = document.createElement('img');
@@ -200,7 +219,9 @@ const taskUI = (function() {
     viewMoreIcon.alt = 'view more icon';
     viewMoreIconContainer.appendChild(viewMoreIcon);
 
-    const editIconContainer = createElement('div', ['tooltip'], {'data-tooltip': 'Edit'});
+    const editIconContainer = createElement('div', ['tooltip'], {
+      'data-tooltip': 'Edit',
+    });
     options.appendChild(editIconContainer);
 
     const editIcon = document.createElement('img');
@@ -208,7 +229,9 @@ const taskUI = (function() {
     editIcon.alt = 'edit icon';
     editIconContainer.appendChild(editIcon);
 
-    const deleteIconContainer = createElement('div', ['tooltip'], {'data-tooltip': 'Delete'});
+    const deleteIconContainer = createElement('div', ['tooltip'], {
+      'data-tooltip': 'Delete',
+    });
     options.appendChild(deleteIconContainer);
 
     const deleteIcon = document.createElement('img');
@@ -250,7 +273,7 @@ const taskUI = (function() {
       checkbox.classList.toggle('checked');
 
       const index = checkbox.closest('.task').dataset.index;
-      pubsub.publish('updateIsChecked', {index, isChecked: checkbox.checked});
+      pubsub.publish('updateIsChecked', { index, isChecked: checkbox.checked });
     });
   }
 
@@ -272,7 +295,10 @@ const taskUI = (function() {
         setPriority(priority, element);
       }
 
-      pubsub.publish('updateTaskPriority', Object.assign({}, {index}, {priority}));
+      pubsub.publish(
+        'updateTaskPriority',
+        Object.assign({}, { index }, { priority })
+      );
     });
   }
 
@@ -295,8 +321,12 @@ const taskUI = (function() {
   }
 
   function fillViewMoreModal(task) {
-    const taskTitle = document.querySelector('.task-details-modal .task-title-content');
-    const taskDescription = document.querySelector('.task-details-modal .task-description-content');
+    const taskTitle = document.querySelector(
+      '.task-details-modal .task-title-content'
+    );
+    const taskDescription = document.querySelector(
+      '.task-details-modal .task-description-content'
+    );
 
     taskTitle.textContent = task.title;
     taskDescription.textContent = task.description;
@@ -304,7 +334,9 @@ const taskUI = (function() {
 
   function editTask(task) {
     const taskContainers = document.querySelectorAll('.task');
-    const taskContainer = [...taskContainers].find(element => element.dataset.index === index);
+    const taskContainer = [...taskContainers].find(
+      (element) => element.dataset.index === index
+    );
 
     const taskTitle = taskContainer.querySelector('label');
     taskTitle.textContent = task.title;
@@ -317,7 +349,7 @@ const taskUI = (function() {
     const taskDate = taskContainer.querySelector('.due-date');
     taskDate.textContent = format(parseISO(task.dueDate), 'dd/MM/yyyy');
 
-    pubsub.publish('updateTask', Object.assign({}, task, {index}));
+    pubsub.publish('updateTask', Object.assign({}, task, { index }));
   }
 
   function addDeleteEvent(button) {
@@ -346,14 +378,8 @@ const taskUI = (function() {
     addTask,
     editTask,
     fillViewMoreModal,
-    getIndex
+    getIndex,
   };
 })();
 
-
-export {
-  addModalEvents,
-  addTaskFormSubmitEvents,
-  editTaskForm,
-  taskUI
-};
+export { addModalEvents, addTaskFormSubmitEvents, editTaskForm, taskUI };

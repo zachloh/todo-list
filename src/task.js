@@ -1,22 +1,22 @@
-import { pubsub } from "./pubsub";
+import { pubsub } from './pubsub';
 
 let tasks = [];
 
 const createTask = (title, description, dueDate, priority, isChecked) => {
   const getTitle = () => title;
-  const setTitle = newTitle => title = newTitle;
-  
+  const setTitle = (newTitle) => (title = newTitle);
+
   const getDescription = () => description;
-  const setDescription = newDescription => description = newDescription;
+  const setDescription = (newDescription) => (description = newDescription);
 
   const getDueDate = () => dueDate;
-  const setDueDate = newDueDate => dueDate = newDueDate;
+  const setDueDate = (newDueDate) => (dueDate = newDueDate);
 
   const getPriority = () => priority;
-  const setPriority = newPriority => priority = newPriority;
+  const setPriority = (newPriority) => (priority = newPriority);
 
   const getIsChecked = () => isChecked;
-  const setIsChecked = newIsChecked => isChecked = newIsChecked;
+  const setIsChecked = (newIsChecked) => (isChecked = newIsChecked);
 
   return {
     getTitle,
@@ -28,23 +28,36 @@ const createTask = (title, description, dueDate, priority, isChecked) => {
     getPriority,
     setPriority,
     getIsChecked,
-    setIsChecked
+    setIsChecked,
   };
 };
 
 function loadTasks(tasksToLoad) {
   if (tasksToLoad.tasks) {
-    const tasks = (tasksToLoad.tasks).map(task => {
-      return createTask(task.title, task.description, task.dueDate, 
-        task.priority, task.isChecked);
+    const tasks = tasksToLoad.tasks.map((task) => {
+      return createTask(
+        task.title,
+        task.description,
+        task.dueDate,
+        task.priority,
+        task.isChecked
+      );
     });
-    pubsub.publish('loadProjects', {tasks, projectIndex: tasksToLoad.projectIndex});
+    pubsub.publish('loadProjects', {
+      tasks,
+      projectIndex: tasksToLoad.projectIndex,
+    });
   }
 }
 
 function addTask(task) {
-  const newTask = createTask(task.title, task.description, task.dueDate, 
-    task.priority, false);
+  const newTask = createTask(
+    task.title,
+    task.description,
+    task.dueDate,
+    task.priority,
+    false
+  );
   tasks.push(newTask);
   sendTasksArray();
 }
@@ -56,7 +69,7 @@ function getTask(index) {
     description: task.getDescription(),
     dueDate: task.getDueDate(),
     priority: task.getPriority(),
-    isChecked: task.getIsChecked()
+    isChecked: task.getIsChecked(),
   });
 }
 
@@ -95,15 +108,15 @@ function sendTasksArray() {
 function setTasksArray(newTasksArray) {
   tasks = newTasksArray;
 
-  const tasksToRender = tasks.map(task => {
+  const tasksToRender = tasks.map((task) => {
     return {
       title: task.getTitle(),
       description: task.getDescription(),
       dueDate: task.getDueDate(),
       priority: task.getPriority(),
-      isChecked: task.getIsChecked()
+      isChecked: task.getIsChecked(),
     };
-  })
+  });
   pubsub.publish('renderTasks', tasksToRender);
 }
 
@@ -111,7 +124,7 @@ function setTasksArray(newTasksArray) {
 function getDueTasks(tasks) {
   let today = new Date();
   const dd = String(today.getDate()).padStart(2, '0');
-  const mm = String(today.getMonth() + 1).padStart(2, '0'); 
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
   const yyyy = today.getFullYear();
   today = yyyy + '-' + mm + '-' + dd;
 
@@ -126,10 +139,10 @@ function getDueTasks(tasks) {
         isChecked: task.getIsChecked(),
         taskIndex: index,
         projectIndex: tasks.projectIndex,
-        projectName: tasks.projectName
+        projectName: tasks.projectName,
       };
       tasksToRender.push(taskToRender);
-    };
+    }
   });
   pubsub.publish('renderTodayTasks', tasksToRender);
 }
@@ -140,20 +153,26 @@ function getDueTaskDetails(tasks) {
     title: task.getTitle(),
     description: task.getDescription(),
     dueDate: task.getDueDate(),
-    priority: task.getPriority()
+    priority: task.getPriority(),
   });
 }
 
 function setTodayIsChecked(currentTasks) {
   tasks = currentTasks.tasks;
   tasks[currentTasks.taskIndex].setIsChecked(currentTasks.isChecked);
-  pubsub.publish('updateTodayProject', {tasks, projectIndex: currentTasks.projectIndex});
+  pubsub.publish('updateTodayProject', {
+    tasks,
+    projectIndex: currentTasks.projectIndex,
+  });
 }
 
 function setTodayTaskPriority(currentTasks) {
   tasks = currentTasks.tasks;
   tasks[currentTasks.taskIndex].setPriority(currentTasks.priority);
-  pubsub.publish('updateTodayProject', {tasks, projectIndex: currentTasks.projectIndex});
+  pubsub.publish('updateTodayProject', {
+    tasks,
+    projectIndex: currentTasks.projectIndex,
+  });
 }
 
 function editTodayTask(currentTasks) {
@@ -163,26 +182,32 @@ function editTodayTask(currentTasks) {
   task.setDescription(currentTasks.newTask.description);
   task.setDueDate(currentTasks.newTask.dueDate);
   task.setPriority(currentTasks.newTask.priority);
-  pubsub.publish('updateTodayProject', {tasks, projectIndex: currentTasks.projectIndex});
+  pubsub.publish('updateTodayProject', {
+    tasks,
+    projectIndex: currentTasks.projectIndex,
+  });
 }
 
 function deleteTodayDueTask(currentTasks) {
   tasks = currentTasks.tasks;
   tasks.splice(currentTasks.taskIndex, 1);
-  pubsub.publish('updateTodayProject', {tasks, projectIndex: currentTasks.projectIndex});
+  pubsub.publish('updateTodayProject', {
+    tasks,
+    projectIndex: currentTasks.projectIndex,
+  });
 }
 
 // function related to localStorage
 function getTasksForStorage(currentTasks) {
   const tasksForStorage = [];
-  
-  currentTasks.forEach(currentTask => {
+
+  currentTasks.forEach((currentTask) => {
     tasksForStorage.push({
       title: currentTask.getTitle(),
       description: currentTask.getDescription(),
       dueDate: currentTask.getDueDate(),
       priority: currentTask.getPriority(),
-      isChecked: currentTask.getIsChecked()
+      isChecked: currentTask.getIsChecked(),
     });
   });
   pubsub.publish('sendTasksForStorage', tasksForStorage);
@@ -204,5 +229,5 @@ export {
   setTodayTaskPriority,
   editTodayTask,
   deleteTodayDueTask,
-  getTasksForStorage
+  getTasksForStorage,
 };

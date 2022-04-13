@@ -16,7 +16,7 @@ function initialPageLoad() {
   const projects = retrieveFromStorage();
   projects.forEach((project, index) => {
     if (index > 0) {
-      pubsub.publish('pageLoad', {project, index});
+      pubsub.publish('pageLoad', { project, index });
       projectUI.addProject(project.name);
     }
   });
@@ -49,17 +49,17 @@ function closeModal(modal) {
 }
 
 // 'Add Project' form module
-const addProjectForm = (function() {
+const addProjectForm = (function () {
   const form = document.querySelector('.add-project-form');
   const projectName = document.querySelector('.add-project-name input');
 
   function formSubmitEvent() {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      
+
       const name = projectName.value;
       if (isValid(name)) {
-        pubsub.publish('addProject', {name});
+        pubsub.publish('addProject', { name });
         projectUI.addProject(name);
         closeModal(modal);
         resetForm();
@@ -71,7 +71,9 @@ const addProjectForm = (function() {
 
   function isValid(name) {
     const currentProjectNames = document.querySelectorAll('.project div');
-    return !([...currentProjectNames].some(projectName => projectName.textContent === name));
+    return ![...currentProjectNames].some(
+      (projectName) => projectName.textContent === name
+    );
   }
 
   function resetForm() {
@@ -79,22 +81,22 @@ const addProjectForm = (function() {
   }
 
   return {
-    formSubmitEvent
+    formSubmitEvent,
   };
 })();
 
 // Home is the default project
-const homeUI = (function() {
+const homeUI = (function () {
   const home = document.querySelector('.home');
 
   function pageLoad() {
     const projects = retrieveFromStorage();
     if (!projects) {
-      pubsub.publish('addProject', {name: 'home'});
+      pubsub.publish('addProject', { name: 'home' });
     } else {
-      pubsub.publish('pageLoad', {project: projects[0], index: 0});
+      pubsub.publish('pageLoad', { project: projects[0], index: 0 });
     }
-    
+
     selectHome();
     home.addEventListener('click', () => {
       selectHome();
@@ -120,17 +122,25 @@ const homeUI = (function() {
   return {
     pageLoad,
     selectHome,
-    unselectHome
+    unselectHome,
   };
-})(); 
+})();
 
-const todayUI = (function(){
+const todayUI = (function () {
   const today = document.querySelector('.today');
   const addTaskBtn = document.querySelector('.add-task');
-  const taskTitle = document.querySelector('.edit-today-task-modal input[type=text]');
-  const taskDescription = document.querySelector('.edit-today-task-modal textarea');
-  const taskDueDate = document.querySelector('.edit-today-task-modal input[type=date]');
-  const taskPriority = document.querySelectorAll('.edit-today-task-modal input[name="priority"]');
+  const taskTitle = document.querySelector(
+    '.edit-today-task-modal input[type=text]'
+  );
+  const taskDescription = document.querySelector(
+    '.edit-today-task-modal textarea'
+  );
+  const taskDueDate = document.querySelector(
+    '.edit-today-task-modal input[type=date]'
+  );
+  const taskPriority = document.querySelectorAll(
+    '.edit-today-task-modal input[name="priority"]'
+  );
 
   // To be used by the edit task function
   let taskIndex;
@@ -139,7 +149,7 @@ const todayUI = (function(){
   function addEvent() {
     today.addEventListener('click', () => {
       selectToday();
-    })
+    });
   }
 
   function selectToday() {
@@ -149,7 +159,7 @@ const todayUI = (function(){
 
     const projectTitle = document.querySelector('.tasks-title');
     projectTitle.textContent = 'Today';
-    
+
     // Get each project to get their tasks due today
     tasks.innerHTML = '';
     pubsub.publish('loopEachProject');
@@ -165,8 +175,8 @@ const todayUI = (function(){
   function renderTodayTasks(tasks) {
     tasks.forEach((task, index) => {
       addTaskToUI(task, index);
-    })
-  };
+    });
+  }
 
   function addTaskToUI(task, taskUiIndex) {
     if (taskUiIndex === 0) {
@@ -175,16 +185,26 @@ const todayUI = (function(){
       taskTitle.textContent = `${task.projectName}:`;
     }
 
-    const taskContainer = createElement('div', ['task'], {'data-task-id': task.taskIndex, 'data-project-id': task.projectIndex});
+    const taskContainer = createElement('div', ['task'], {
+      'data-task-id': task.taskIndex,
+      'data-project-id': task.projectIndex,
+    });
     tasks.appendChild(taskContainer);
 
-    const checkbox = createElement('input', [], {type: 'checkbox', id: `${task.projectIndex}-${task.taskIndex}`});
+    const checkbox = createElement('input', [], {
+      type: 'checkbox',
+      id: `${task.projectIndex}-${task.taskIndex}`,
+    });
     taskContainer.appendChild(checkbox);
 
-    const label = createElement('label', [], {for: `${task.projectIndex}-${task.taskIndex}`});
+    const label = createElement('label', [], {
+      for: `${task.projectIndex}-${task.taskIndex}`,
+    });
     taskContainer.appendChild(label);
 
-    const priority = createElement('div', ['tooltip'], {'data-tooltip': 'Toggle Priority'});
+    const priority = createElement('div', ['tooltip'], {
+      'data-tooltip': 'Toggle Priority',
+    });
     taskContainer.appendChild(priority);
 
     const dueDate = createElement('div', ['due-date'], {});
@@ -193,7 +213,9 @@ const todayUI = (function(){
     const options = createElement('div', ['options'], {});
     taskContainer.appendChild(options);
 
-    const viewMoreIconContainer = createElement('div', ['tooltip'], {'data-tooltip': 'View Details'});
+    const viewMoreIconContainer = createElement('div', ['tooltip'], {
+      'data-tooltip': 'View Details',
+    });
     options.appendChild(viewMoreIconContainer);
 
     const viewMoreIcon = document.createElement('img');
@@ -201,7 +223,9 @@ const todayUI = (function(){
     viewMoreIcon.alt = 'view more icon';
     viewMoreIconContainer.appendChild(viewMoreIcon);
 
-    const editIconContainer = createElement('div', ['tooltip'], {'data-tooltip': 'Edit'});
+    const editIconContainer = createElement('div', ['tooltip'], {
+      'data-tooltip': 'Edit',
+    });
     options.appendChild(editIconContainer);
 
     const editIcon = document.createElement('img');
@@ -209,7 +233,9 @@ const todayUI = (function(){
     editIcon.alt = 'edit icon';
     editIconContainer.appendChild(editIcon);
 
-    const deleteIconContainer = createElement('div', ['tooltip'], {'data-tooltip': 'Delete'});
+    const deleteIconContainer = createElement('div', ['tooltip'], {
+      'data-tooltip': 'Delete',
+    });
     options.appendChild(deleteIconContainer);
 
     const deleteIcon = document.createElement('img');
@@ -231,7 +257,6 @@ const todayUI = (function(){
     addViewMoreEvent(viewMoreIcon);
     addEditEvent(editIcon);
     addDeleteEvent(deleteIcon);
-
   }
 
   function setPriority(priority, element) {
@@ -253,7 +278,12 @@ const todayUI = (function(){
 
       const projectIndex = checkbox.closest('.task').dataset.projectId;
       const taskIndex = checkbox.closest('.task').dataset.taskId;
-      pubsub.publish('updateTodayIsChecked', {projectIndex, taskIndex, isChecked: checkbox.checked, function: 'setIsChecked'});
+      pubsub.publish('updateTodayIsChecked', {
+        projectIndex,
+        taskIndex,
+        isChecked: checkbox.checked,
+        function: 'setIsChecked',
+      });
     });
   }
 
@@ -276,8 +306,13 @@ const todayUI = (function(){
         setPriority(priority, element);
       }
 
-      pubsub.publish('updateTodayTaskPriority', {projectIndex, taskIndex, priority, function: 'setPriority'});
-    })
+      pubsub.publish('updateTodayTaskPriority', {
+        projectIndex,
+        taskIndex,
+        priority,
+        function: 'setPriority',
+      });
+    });
   }
 
   function addViewMoreEvent(button) {
@@ -286,7 +321,11 @@ const todayUI = (function(){
       const projectIndex = button.closest('.task').dataset.projectId;
       const taskIndex = button.closest('.task').dataset.taskId;
 
-      pubsub.publish('getDueTaskDetails', {projectIndex, taskIndex, function: 'viewMore'});
+      pubsub.publish('getDueTaskDetails', {
+        projectIndex,
+        taskIndex,
+        function: 'viewMore',
+      });
       openModal(modal);
     });
   }
@@ -298,7 +337,11 @@ const todayUI = (function(){
       taskIndex = button.closest('.task').dataset.taskId;
 
       // publish
-      pubsub.publish('openTodayEditModal', {projectIndex, taskIndex, function: 'openEditModal'});
+      pubsub.publish('openTodayEditModal', {
+        projectIndex,
+        taskIndex,
+        function: 'openEditModal',
+      });
       openModal(modal);
     });
   }
@@ -323,13 +366,17 @@ const todayUI = (function(){
       const taskIndex = taskContainer.dataset.taskId;
       taskContainer.parentElement.removeChild(taskContainer);
       updateIndex(projectIndex);
-      pubsub.publish('deleteTodayTask', {projectIndex, taskIndex, function: 'delete'});
+      pubsub.publish('deleteTodayTask', {
+        projectIndex,
+        taskIndex,
+        function: 'delete',
+      });
     });
   }
 
   function updateIndex(projectIndex) {
     const tasks = document.querySelectorAll('.task');
-    const currentProjectTasks = [...tasks].filter(task => {
+    const currentProjectTasks = [...tasks].filter((task) => {
       return task.dataset.projectId === projectIndex;
     });
     currentProjectTasks.forEach((task, index) => {
@@ -339,8 +386,12 @@ const todayUI = (function(){
     const taskTitles = document.querySelectorAll('.tasks .tasks-title');
     if (currentProjectTasks.length === 0) {
       [...taskTitles].forEach((taskTitle) => {
-        if (!taskTitle.nextElementSibling || !taskTitle.nextElementSibling.classList.contains('task')) taskTitle.parentElement.removeChild(taskTitle);
-      })
+        if (
+          !taskTitle.nextElementSibling ||
+          !taskTitle.nextElementSibling.classList.contains('task')
+        )
+          taskTitle.parentElement.removeChild(taskTitle);
+      });
     }
   }
 
@@ -349,21 +400,25 @@ const todayUI = (function(){
     form.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const priorityValue = [...taskPriority].find(input => input.checked).value;
+      const priorityValue = [...taskPriority].find(
+        (input) => input.checked
+      ).value;
       const task = {
         title: taskTitle.value,
         description: taskDescription.value,
         dueDate: taskDueDate.value,
-        priority: priorityValue
+        priority: priorityValue,
       };
       const modal = document.querySelector('.edit-today-task-modal');
 
       // Check if the name is taken (only in the current project)
       const tasks = document.querySelectorAll('.task');
-      const currentProjectTasks = [...tasks].filter(task => {
+      const currentProjectTasks = [...tasks].filter((task) => {
         return task.dataset.projectId === projectIndex;
       });
-      const filteredTasks = currentProjectTasks.filter(task => task.dataset.taskId !== taskIndex);
+      const filteredTasks = currentProjectTasks.filter(
+        (task) => task.dataset.taskId !== taskIndex
+      );
 
       if (isValid(task.title, filteredTasks)) {
         closeModal(modal);
@@ -375,13 +430,19 @@ const todayUI = (function(){
   }
 
   function isValid(name, tasks) {
-    const taskNames = tasks.map(task => 
-      task.querySelector('label').textContent);
-    return !(taskNames.some(taskName => taskName === name));
+    const taskNames = tasks.map(
+      (task) => task.querySelector('label').textContent
+    );
+    return !taskNames.some((taskName) => taskName === name);
   }
 
   function editTask(task) {
-    pubsub.publish('updateTodayTask', {projectIndex, taskIndex, newTask: task, function: 'edit'});
+    pubsub.publish('updateTodayTask', {
+      projectIndex,
+      taskIndex,
+      newTask: task,
+      function: 'edit',
+    });
 
     // Remove task from UI if date changed
     selectToday();
@@ -393,25 +454,27 @@ const todayUI = (function(){
     unselectToday,
     renderTodayTasks,
     prefillForm,
-    addFormSubmitEvent
+    addFormSubmitEvent,
   };
-})(); 
+})();
 
-const projectUI = (function() {
+const projectUI = (function () {
   let index;
   const projectContainer = document.querySelector('.projects');
 
   function addProject(name) {
     let projectCounter = projectContainer.childElementCount;
 
-    const project = createElement('div', ['project'], {'data-id': projectCounter + 1});
+    const project = createElement('div', ['project'], {
+      'data-id': projectCounter + 1,
+    });
     projectContainer.appendChild(project);
-  
+
     const projectIcon = document.createElement('img');
     projectIcon.src = ProjectIcon;
     projectIcon.alt = 'list icon';
     project.appendChild(projectIcon);
-  
+
     const projectName = createElement('div', ['project-title'], {});
     projectName.textContent = name;
     project.appendChild(projectName);
@@ -419,7 +482,9 @@ const projectUI = (function() {
     const projectOptions = createElement('div', ['project-options'], {});
     project.appendChild(projectOptions);
 
-    const deleteIconWrapper = createElement('div', ['tooltip'], {'data-tooltip': 'Delete'})
+    const deleteIconWrapper = createElement('div', ['tooltip'], {
+      'data-tooltip': 'Delete',
+    });
     projectOptions.appendChild(deleteIconWrapper);
 
     const deleteIcon = document.createElement('img');
@@ -442,7 +507,7 @@ const projectUI = (function() {
 
   function selectProject(projectSelected, projectName) {
     const allProjects = document.querySelectorAll('.project');
-    [...allProjects].forEach(project => {
+    [...allProjects].forEach((project) => {
       if (project === projectSelected) {
         project.classList.add('selected');
       } else {
@@ -462,11 +527,11 @@ const projectUI = (function() {
 
   function unselectProjects() {
     const allProjects = document.querySelectorAll('.project');
-    allProjects.forEach(project => {
+    allProjects.forEach((project) => {
       project.classList.remove('selected');
-    })
+    });
   }
-  
+
   function addDeleteEvent(button) {
     button.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -479,12 +544,18 @@ const projectUI = (function() {
       const allProjects = document.querySelectorAll('.project');
 
       // Select the project above or below the deleted project or home (default when no existing project)
-      let selectedProject = [...allProjects].find(project => project.dataset.id === `${deletedIndex - 1}`);
-      if (!selectedProject) selectedProject = [...allProjects].find(project => project.dataset.id === `${deletedIndex}`);
+      let selectedProject = [...allProjects].find(
+        (project) => project.dataset.id === `${deletedIndex - 1}`
+      );
+      if (!selectedProject)
+        selectedProject = [...allProjects].find(
+          (project) => project.dataset.id === `${deletedIndex}`
+        );
       if (!selectedProject) {
         homeUI.selectHome();
       } else {
-        const projectName = selectedProject.querySelector('.project-title').textContent;
+        const projectName =
+          selectedProject.querySelector('.project-title').textContent;
         selectProject(selectedProject, projectName);
       }
     });
@@ -499,12 +570,8 @@ const projectUI = (function() {
 
   return {
     addProject,
-    unselectProjects
+    unselectProjects,
   };
 })();
 
-export {
-  initialPageLoad,
-  addProjectEvents,
-  todayUI
-};
+export { initialPageLoad, addProjectEvents, todayUI };

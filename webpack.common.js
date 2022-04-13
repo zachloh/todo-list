@@ -15,18 +15,18 @@ module.exports = {
         collapseWhitespace: true,
         keepClosingSlash: true,
         removeComments: true,
-        removeRedundantAttributes: false, 
+        removeRedundantAttributes: false,
         removeScriptTypeAttributes: true,
         removeStyleLinkTypeAttributes: true,
-        useShortDoctype: true
-      }
+        useShortDoctype: true,
+      },
     }),
   ],
   module: {
     rules: [
       {
         test: /\.html$/i,
-        loader: "html-loader",
+        loader: 'html-loader',
       },
       {
         test: /\.css$/i,
@@ -35,16 +35,16 @@ module.exports = {
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: 'asset/resource',
-        generator : {
-          filename : 'assets/images/[name][ext][query]',
-        }
+        generator: {
+          filename: 'assets/images/[name][ext][query]',
+        },
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/i,
         type: 'asset/resource',
-        generator : {
-          filename : 'assets/fonts/[name][ext][query]',
-        }
+        generator: {
+          filename: 'assets/fonts/[name][ext][query]',
+        },
       },
     ],
   },

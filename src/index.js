@@ -1,5 +1,8 @@
 import './style.css';
-import { addModalEvents, addTaskFormSubmitEvents } from './taskDisplayController';
+import {
+  addModalEvents,
+  addTaskFormSubmitEvents,
+} from './taskDisplayController';
 import { subscribeToEvents } from './eventsHandler';
 import { initialPageLoad, addProjectEvents } from './projectDisplayController';
 

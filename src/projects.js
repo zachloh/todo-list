@@ -1,4 +1,4 @@
-import { pubsub } from "./pubsub";
+import { pubsub } from './pubsub';
 
 const projects = [];
 let index;
@@ -8,23 +8,26 @@ const createProject = (name) => {
   let tasks = [];
 
   const getName = () => name;
-  const setName = newName => name = newName; 
+  const setName = (newName) => (name = newName);
 
   const getTasks = () => tasks;
-  const setTasks = newTasks => tasks = newTasks;
+  const setTasks = (newTasks) => (tasks = newTasks);
 
   return {
     getName,
     setName,
     getTasks,
-    setTasks
+    setTasks,
   };
 };
 
 function pageLoad(project) {
   const newProject = createProject(project.project.name);
   projects.push(newProject);
-  pubsub.publish('loadTasks', {tasks: project.project.tasks, projectIndex: project.index});
+  pubsub.publish('loadTasks', {
+    tasks: project.project.tasks,
+    projectIndex: project.index,
+  });
 }
 
 function loadProjects(project) {
@@ -59,20 +62,45 @@ function loopEachProject() {
     const tasks = {
       tasks: project.getTasks(),
       projectIndex: index,
-      projectName: project.getName()
-    }
+      projectName: project.getName(),
+    };
     pubsub.publish('getDueTasks', tasks);
   });
 }
 
 function getTaskFromProject(index) {
   const tasks = projects[index.projectIndex].getTasks();
-  if (index.function === 'viewMore') pubsub.publish('getTaskDetails', {tasks, index: index.taskIndex});
-  if (index.function === 'setIsChecked') pubsub.publish('setTodayIsChecked', {tasks, taskIndex: index.taskIndex, projectIndex: index.projectIndex, isChecked: index.isChecked});
-  if (index.function === 'setPriority') pubsub.publish('setTodayTaskPriority', {tasks, taskIndex: index.taskIndex, projectIndex: index.projectIndex, priority: index.priority});
-  if (index.function === 'openEditModal') pubsub.publish('getTaskDetails', {tasks, index: index.taskIndex});
-  if (index.function === 'edit') pubsub.publish('editTodayTask', {tasks, taskIndex: index.taskIndex, projectIndex: index.projectIndex, newTask: index.newTask});
-  if (index.function === 'delete') pubsub.publish('deleteTodayDueTask', {tasks, taskIndex: index.taskIndex, projectIndex: index.projectIndex});
+  if (index.function === 'viewMore')
+    pubsub.publish('getTaskDetails', { tasks, index: index.taskIndex });
+  if (index.function === 'setIsChecked')
+    pubsub.publish('setTodayIsChecked', {
+      tasks,
+      taskIndex: index.taskIndex,
+      projectIndex: index.projectIndex,
+      isChecked: index.isChecked,
+    });
+  if (index.function === 'setPriority')
+    pubsub.publish('setTodayTaskPriority', {
+      tasks,
+      taskIndex: index.taskIndex,
+      projectIndex: index.projectIndex,
+      priority: index.priority,
+    });
+  if (index.function === 'openEditModal')
+    pubsub.publish('getTaskDetails', { tasks, index: index.taskIndex });
+  if (index.function === 'edit')
+    pubsub.publish('editTodayTask', {
+      tasks,
+      taskIndex: index.taskIndex,
+      projectIndex: index.projectIndex,
+      newTask: index.newTask,
+    });
+  if (index.function === 'delete')
+    pubsub.publish('deleteTodayDueTask', {
+      tasks,
+      taskIndex: index.taskIndex,
+      projectIndex: index.projectIndex,
+    });
 }
 
 function updateTodayProject(newTasks) {
@@ -84,7 +112,7 @@ function updateTodayProject(newTasks) {
 // Functions related to localStorage
 function addProjectsToStorage() {
   const allProjects = [];
-  projects.forEach(project => {
+  projects.forEach((project) => {
     const projectDetails = {};
     projectDetails.name = project.getName();
 
@@ -112,5 +140,5 @@ export {
   loopEachProject,
   getTaskFromProject,
   updateTodayProject,
-  retrieveTasks
+  retrieveTasks,
 };
